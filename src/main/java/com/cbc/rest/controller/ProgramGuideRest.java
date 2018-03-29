@@ -1,7 +1,7 @@
 package com.cbc.rest.controller;
 
-import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,13 +15,13 @@ import com.cbc.bean.Network;
 import com.cbc.service.NetworkService;
 
 @RestController
-@RequestMapping("rest")
+@RequestMapping("rest/network")
 public class ProgramGuideRest {
 	
 	@Autowired
 	NetworkService networkService;
 
-	@RequestMapping(value="/programs", method=RequestMethod.GET, produces=MediaType.APPLICATION_JSON_VALUE)
+	/*@RequestMapping(value="/programs", method=RequestMethod.GET, produces=MediaType.APPLICATION_JSON_VALUE)
 	public ArrayList<Network> listOfPrograms() {
 		Network prog1 = new Network();
 		prog1.setId(1);
@@ -38,9 +38,9 @@ public class ProgramGuideRest {
 		networks.add(prog2);	
 		
 		return networks;
-	}
+	}*/
 	
-	@RequestMapping(value="/createNetwork", method=RequestMethod.POST, consumes=MediaType.APPLICATION_JSON_VALUE)
+	@RequestMapping(value="/create", method=RequestMethod.POST, consumes=MediaType.APPLICATION_JSON_VALUE)
 	public Map<String, String> addNetwork(@RequestBody Network network) {
 		System.out.println(network);
 		networkService.saveNetwork(network);
@@ -49,5 +49,9 @@ public class ProgramGuideRest {
 		return result;
 	}
 	
+	@RequestMapping(value="/", method=RequestMethod.GET, produces=MediaType.APPLICATION_JSON_VALUE)
+	public List<Network> listNetworks() {
+		return networkService.listAllNetworks();		
+	}
 	
 }

@@ -32,8 +32,12 @@ public class NetworkDAOImpl implements NetworkDAO{
 	}
 
 	public List<Network> listAllNetworks() {
-		// TODO Auto-generated method stub
-		return null;
+		Session session = sessionFactory.openSession();
+		Transaction transaction = session.beginTransaction();
+		List<Network> list = session.createCriteria(Network.class).list();
+		transaction.commit();
+		session.close();
+		return list;
 	}
 
 	public void saveNetwork(Network network) {

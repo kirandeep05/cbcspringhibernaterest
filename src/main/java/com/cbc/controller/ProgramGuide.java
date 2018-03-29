@@ -3,6 +3,7 @@ package com.cbc.controller;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -15,6 +16,8 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.cbc.bean.Network;
+import com.cbc.constants.CommonConstants;
+import com.cbc.rest.controller.ProgramGuideRest;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -22,6 +25,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @RequestMapping("cbc")
 public class ProgramGuide {
 
+	@Autowired
+	ProgramGuideRest progGuideRest;
+	
 	@ModelAttribute
 	public void commonText(Model model) {
 		model.addAttribute("HeaderText", "Program Guide");
@@ -30,7 +36,14 @@ public class ProgramGuide {
 	
 	@RequestMapping("/programGuide")
 	public ModelAndView viewProgramGuide() {
-		return new ModelAndView("viewProgramGuide");		
+		RestTemplate restTemplate = new RestTemplate();
+		String url = CommonConstants.BASE_REST_URL+"network/";
+		@SuppressWarnings("unchecked")
+		ArrayList<Network> response = restTemplate.getForObject(url,ArrayList.class);
+		System.out.println(response);
+		ModelAndView mv = new ModelAndView("viewProgramGuide");
+		mv.addObject("networksList", response);
+		return mv;		
 	}
 	
 	@RequestMapping("/viewCreateNetwork")
@@ -39,27 +52,37 @@ public class ProgramGuide {
 	}
 	
 	@RequestMapping(value="/createNetwork", method=RequestMethod.POST)
-	public ModelAndView createNetwork(@ModelAttribute Network network) {
-		System.out.println(network);
+	public String createNetwork(@ModelAttribute Network network) {
 		ObjectMapper objMapper = new ObjectMapper();
 		String jsonString = null;
 		try {
 			jsonString = objMapper.writeValueAsString(network);
 		} catch (JsonProcessingException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		String url = CommonConstants.BASE_REST_URL+"network/create";
+		postJsonResponseRestTemplate(url, jsonString, MediaType.APPLICATION_JSON);
+		return "forward:programGuide";
+		//return new ModelAndView("viewProgramGuide");
+	}
+	
+	
+	public String postJsonResponseRestTemplate(String url,String jsonString,MediaType mediaType) {
 		RestTemplate restTemplate = new RestTemplate();
-		String url = "http://localhost:8080/programguide/rest/createNetwork";
 		HttpHeaders headers = new HttpHeaders();
-		headers.setContentType(MediaType.APPLICATION_JSON);
+		headers.setContentType(mediaType);
 		List<MediaType> list = new ArrayList<MediaType>();
-		list.add(MediaType.APPLICATION_JSON);
+		list.add(mediaType);
 		headers.setAccept(list);
 		HttpEntity<String> entity = new HttpEntity<String>(jsonString,headers);
 		String response = restTemplate.postForObject(url, entity, String.class);
-		System.out.println(response);
-		return new ModelAndView("viewProgramGuide");
+		return response;
+	}
+	
+	public ArrayList<Network> getJsonResponseObject(String url, String jsonString, MediaType mediaType) {
+		RestTemplate restTemplate = new RestTemplate();
+		ArrayList<Network> response = restTemplate.getForObject(url,ArrayList.class);
+		return response;
 	}
 	
 }
