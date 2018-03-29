@@ -2,6 +2,7 @@
        xmlns:mvc="http://www.springframework.org/schema/mvc"
        xmlns:context="http://www.springframework.org/schema/context"
        xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:tx="http://www.springframework.org/schema/tx"
        xmlns="http://www.springframework.org/schema/beans"
        xsi:schemaLocation="http://www.springframework.org/schema/mvc 
        http://www.springframework.org/schema/mvc/spring-mvc.xsd 
@@ -10,7 +11,9 @@
  	   http://www.springframework.org/schema/context 
  	   http://www.springframework.org/schema/context/spring-context.xsd
  	   http://www.springframework.org/schema/aop
- 	   http://www.springframework.org/schema/aop/spring-aop-4.0.xsd">
+ 	   http://www.springframework.org/schema/aop/spring-aop-4.0.xsd
+ 	   http://www.springframework.org/schema/tx 
+ 	   http://www.springframework.org/schema/tx/spring-tx-4.0.xsd">
  	   
  	<context:annotation-config />
  	<context:component-scan base-package="com.cbc" />
@@ -51,5 +54,11 @@
 			</props>
 		</property>
 	</bean>
+	
+	<bean id="transactionManager" class="org.springframework.orm.hibernate4.HibernateTransactionManager">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+	
+	<tx:annotation-driven transaction-manager="transactionManager"/>
     
 </beans>

@@ -13,12 +13,12 @@ public class LoggingAspect {
 	
 	@Before("withinProgramguideRestPointcut()")
 	public void loggingBefore(JoinPoint jp) {
-		System.out.println("Before Joinpoint is "+jp.toString());
+		System.out.println("Before Joinpoint is "+jp.getArgs().toString());
 	}
 	
 	@After("withinProgramguideRestPointcut()")
 	public void loggingAfter(JoinPoint jp) {
-		System.out.println("After Joinpoint is "+jp.toString());
+		System.out.println("After Joinpoint is "+jp.getTarget().toString());
 	}
 	
 	//@Pointcut("within(com.cbc.rest.controller.ProgramGuideRest))")

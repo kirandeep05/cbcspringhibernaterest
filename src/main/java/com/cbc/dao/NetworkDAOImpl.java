@@ -4,9 +4,9 @@ import java.util.List;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.Transaction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.cbc.bean.Network;
 
@@ -16,13 +16,10 @@ public class NetworkDAOImpl implements NetworkDAO{
 	@Autowired
 	SessionFactory sessionFactory;
 	
+	@Transactional
 	public Network findById(long id) {
 		Session session = sessionFactory.openSession();
-		Transaction transaction = session.beginTransaction();
-		Network network = session.get(Network.class, id);
-		transaction.commit();
-		session.close();
-		
+		Network network = (Network) session.get(Network.class, id);		
 		return network;
 	}
 
@@ -31,21 +28,17 @@ public class NetworkDAOImpl implements NetworkDAO{
 		return null;
 	}
 
+	@Transactional
 	public List<Network> listAllNetworks() {
 		Session session = sessionFactory.openSession();
-		Transaction transaction = session.beginTransaction();
 		List<Network> list = session.createCriteria(Network.class).list();
-		transaction.commit();
-		session.close();
 		return list;
 	}
 
+	@Transactional
 	public void saveNetwork(Network network) {
 		Session session = sessionFactory.openSession();
-		Transaction transaction = session.beginTransaction();
 		session.save(network);
-		transaction.commit();
-		session.close();	
 	}
 
 	public void deleteNetworkById(long id) {
