@@ -10,6 +10,7 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.client.RestTemplate;
@@ -34,16 +35,22 @@ public class ProgramGuide {
 		model.addAttribute("CBCtext", "CBC.ca displays schedules for each television and radio network. To see the schedule for a particular network, please select your network below:");
 	}
 	
-	@RequestMapping("/programGuide")
+	@RequestMapping("/network")
 	public ModelAndView viewProgramGuide() {
 		RestTemplate restTemplate = new RestTemplate();
-		String url = CommonConstants.BASE_REST_URL+"network/";
-		@SuppressWarnings("unchecked")
-		ArrayList<Network> response = restTemplate.getForObject(url,ArrayList.class);
-		System.out.println(response);
+		ArrayList<Network> response = restTemplate.getForObject(CommonConstants.REST_NETWORK_VIEW_ALL_URL,ArrayList.class);
 		ModelAndView mv = new ModelAndView("viewProgramGuide");
 		mv.addObject("networksList", response);
 		return mv;		
+	}
+
+	@RequestMapping("/network/{id}")
+	public ModelAndView viewNetwork(@PathVariable("id") long id) {
+		RestTemplate restTemplate = new RestTemplate();
+		Network network = restTemplate.getForObject(CommonConstants.REST_NETWORK_VIEW_ALL_URL+id, Network.class);
+		ModelAndView mv = new ModelAndView("viewNetwork");
+		mv.addObject("network", network);
+		return mv;
 	}
 	
 	@RequestMapping("/viewCreateNetwork")
@@ -58,12 +65,11 @@ public class ProgramGuide {
 		try {
 			jsonString = objMapper.writeValueAsString(network);
 		} catch (JsonProcessingException e) {
+			System.out.println("Test repo");
 			e.printStackTrace();
 		}
-		String url = CommonConstants.BASE_REST_URL+"network/create";
-		postJsonResponseRestTemplate(url, jsonString, MediaType.APPLICATION_JSON);
-		return "forward:programGuide";
-		//return new ModelAndView("viewProgramGuide");
+		postJsonResponseRestTemplate(CommonConstants.REST_NETWORK_CREATE_URL, jsonString, MediaType.APPLICATION_JSON);
+		return "forward:network";
 	}
 	
 	
@@ -79,7 +85,7 @@ public class ProgramGuide {
 		return response;
 	}
 	
-	public ArrayList<Network> getJsonResponseObject(String url, String jsonString, MediaType mediaType) {
+	public ArrayList<Network> getJsonResponseObject(String url) {
 		RestTemplate restTemplate = new RestTemplate();
 		ArrayList<Network> response = restTemplate.getForObject(url,ArrayList.class);
 		return response;
