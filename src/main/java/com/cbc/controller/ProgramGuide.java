@@ -65,7 +65,7 @@ public class ProgramGuide {
 		try {
 			jsonString = objMapper.writeValueAsString(network);
 		} catch (JsonProcessingException e) {
-			System.out.println("Test repo");
+			System.out.println("Test repo again");
 			e.printStackTrace();
 		}
 		postJsonResponseRestTemplate(CommonConstants.REST_NETWORK_CREATE_URL, jsonString, MediaType.APPLICATION_JSON);
