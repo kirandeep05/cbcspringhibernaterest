@@ -22,25 +22,6 @@ public class ProgramGuideRest {
 	@Autowired
 	NetworkService networkService;
 
-	/*@RequestMapping(value="/programs", method=RequestMethod.GET, produces=MediaType.APPLICATION_JSON_VALUE)
-	public ArrayList<Network> listOfPrograms() {
-		Network prog1 = new Network();
-		prog1.setId(1);
-		prog1.setName("CBC Television");
-		prog1.setUrl("http://www.cbc.ca/programguide/daily/today/cbc_television");
-		
-		Network prog2 = new Network();
-		prog2.setId(2);
-		prog2.setName("CBC News Network");
-		prog2.setUrl("http://www.cbc.ca/programguide/daily/today/cbc_news");
-		
-		ArrayList<Network> networks = new ArrayList<Network>();
-		networks.add(prog1);
-		networks.add(prog2);	
-		
-		return networks;
-	}*/
-	
 	@RequestMapping(value="/create", method=RequestMethod.POST, consumes=MediaType.APPLICATION_JSON_VALUE)
 	public Map<String, String> addNetwork(@RequestBody Network network) {
 		System.out.println(network);

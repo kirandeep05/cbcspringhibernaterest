@@ -13,12 +13,14 @@ public class LoggingAspect {
 	
 	@Before("withinProgramguideRestPointcut()")
 	public void loggingBefore(JoinPoint jp) {
-		System.out.println("Before Joinpoint is "+jp.getArgs().toString());
+		Dummy d = s->System.out.println(s+ "Joinpoint is "+jp.getArgs().toString());
+		d.test("before");
 	}
 	
 	@After("withinProgramguideRestPointcut()")
 	public void loggingAfter(JoinPoint jp) {
-		System.out.println("After Joinpoint is "+jp.getTarget().toString());
+		Dummy d = s->System.out.println(s+ "Joinpoint is "+jp.getArgs().toString());
+		d.test("after");	
 	}
 	
 	//@Pointcut("within(com.cbc.rest.controller.ProgramGuideRest))")
@@ -27,4 +29,10 @@ public class LoggingAspect {
 		
 	}
 
+}
+
+@FunctionalInterface
+interface Dummy {
+	
+	public void test(String s);
 }
